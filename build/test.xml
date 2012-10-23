@@ -1,0 +1,8 @@
+<project name="blueboothHandle" default="jar" basedir=".">
+<target name="jar">
+<tstamp>  
+            <format property="touch.time" pattern="yyyyMMdd" />
+        </tstamp>
+    	<echo message="${touch.time}" />
+</target>
+</project>

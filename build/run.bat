@@ -1,0 +1,3 @@
+@echo off
+echo 开启PC端程序中，请稍等……
+start javaw -jar bluetoothHandle.jar

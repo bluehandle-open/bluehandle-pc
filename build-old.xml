@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="parser" default="compile" basedir=".">
+
+	<echo>${app.name}</echo>
+	<property name="main-class" value="my.sunny.ui.MainClientUI" />
+	<property name="external-libs" value="lib" />
+    <condition property="external-libs-ospath" value="${basedir}\${external-libs}" else="${basedir}/${external-libs}">
+        <os family="windows" />
+    </condition>
+
+    <target name="init">
+        <mkdir dir="bin"> </mkdir>
+        <mkdir dir="dest"> </mkdir>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac destdir="bin" srcdir="src">            
+            <classpath>
+                <fileset dir="${external-libs}" includes="*.jar" />
+            </classpath>
+        </javac>
+        <copy  todir="bin">
+            <fileset dir="doc" includes="run.bat"/>
+        </copy>
+    </target>
+
+    <target name="run" depends="compile">
+        <java classname="bin/Parser" classpath="classpath.local"> </java>
+    </target>
+
+    <target name="dest" depends="compile">
+        <mkdir dir="dest"></mkdir>
+        <jar jarfile="dest/parser.jar" basedir="bin"></jar>
+        <!--copy todir="dest"/-->
+            <!--fileset dir="bin" includes="*.class" /-->
+        <!--/copy-->
+    </target>
+
+    <target name="clean">
+        <delete dir="bin"> </delete>
+        <delete dir="dest"> </delete>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar jarfile="dest/Parser.jar" basedir="bin">
+        <manifest>
+            <attribute name="Main-class" value="${main-class}"/>
+            <attribute name="Class-path" value=". ../lib/bluecove-2.1.0.jar"/>
+        </manifest>
+        <!--fileset dir="lib" includes="*.jar" /-->
+    </jar>
+    <copy  todir="dest">
+        <fileset dir="doc" includes="Parser.bat"/>
+    </copy>
+  </target>
+
+</project>
