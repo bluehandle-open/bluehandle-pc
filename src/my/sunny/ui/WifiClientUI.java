@@ -63,6 +63,7 @@ public class WifiClientUI {
 			public void actionPerformed(ActionEvent e) {
 				String ipStr = ip.getText();
 				if (RegUtil.isMathing(RegUtil.simpleIpReg, ipStr)) {
+					message.setText("正在连接……");
 					try {
 						new WifiSocket(ipStr,message).start();
 						message.setForeground(Color.BLACK);

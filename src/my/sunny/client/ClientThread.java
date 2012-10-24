@@ -67,8 +67,14 @@ public class ClientThread extends Thread implements IBluetoothConst {
 		while(hasInited) {
 			try {
 				sleep(10);
-				MessageUtil.processMessage(robot, is);
-				System.out.println("process...");
+				boolean isFinished = MessageUtil.processMessage(robot, is);
+				if (!isFinished) {
+					System.out.println("process...");
+				} else {
+					if (socket != null) {
+						stopServer();
+					}
+				}				
 			} catch (InterruptedException e) {				
 				e.printStackTrace();
 				if (socket != null) {

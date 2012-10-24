@@ -21,6 +21,8 @@ public class MessageUtil implements IBluetoothConst {
 			//byte totalLen = totalMessge[0];
 			if (type == recieveKey) {//��������¼�
 				message = new ReciveKey(totalMessge);
+			} else if (type == FINISH_SOCKET) {
+				message = new FinishMessage();
 			}
 		}
 		return message;
@@ -54,9 +56,9 @@ public class MessageUtil implements IBluetoothConst {
 		return hasInited;
 	}
 
-	public static void processMessage(Robot robot,InputStream is)
+	public static boolean processMessage(Robot robot,InputStream is)
 		throws IOException {
-		
+		boolean isFinished = false;
 //		BufferedReader BufferedReader = new BufferedReader(new InputStreamReader(is));
 		//String messageStr = brd.readLine();
 		DataInputStream in = new DataInputStream(is);
@@ -72,8 +74,11 @@ public class MessageUtil implements IBluetoothConst {
 		if (message instanceof ReciveKey) {
 			KeyProcessUtil.fireKeyEvent(robot,(ReciveKey)message);
 			System.out.println("get a key event.");
+		} else if (message instanceof FinishMessage) {
+			isFinished = true;
 		} else {
 			System.out.println("unknown message.");
 		}
+		return isFinished;
 	}
 }

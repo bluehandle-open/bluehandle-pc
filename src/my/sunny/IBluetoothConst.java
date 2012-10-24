@@ -8,12 +8,14 @@ public interface IBluetoothConst {
 	
 	public static final byte recieveServerSign = 0x01;
 	public static final byte recieveKey = 0x02;
-	public static final byte handleKeySet = 0x10;
+	
+	public static final byte handleKeySet = 0x10;	
 	//public static final byte handleKeyGet = 0x11;
 	public static final byte pptKeySet = 0x20;
 	//public static final byte pptKeyGet = 0x21;
 	public static final byte playerKeySet = 0x30;
 	//public static final byte playerKeyGet = 0x31;
+	public static final byte FINISH_SOCKET = 0x40;
 	
 	public static final byte toPress = 1;
 	public static final byte toRelease = 2;

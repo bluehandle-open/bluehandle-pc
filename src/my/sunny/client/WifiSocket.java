@@ -1,6 +1,7 @@
 package my.sunny.client;
 
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.Robot;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,17 +34,23 @@ public class WifiSocket extends Thread {
 		while(!stop) {
 			if (socket != null && is != null) {
 				try {
-					MessageUtil.processMessage(robot, is);
-					System.out.println("process...");
-					sleep(10);
+					boolean isFinished = MessageUtil.processMessage(robot, is);
+					if (!isFinished) {
+						System.out.println("process...");
+						sleep(10);
+					} else {
+						stopServer("手机端退出");
+					}					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-					close("出现异常，错误码1");
+					stopServer("出现异常，错误码1");
 				} catch (IOException e) {
 					e.printStackTrace();
-					close("出现异常，错误码2");
+					System.out.println("出现异常，错误码2");
+					stopServer("出现异常，错误码2");
 				} catch (Exception e) {//出现手机端服务关闭等异常
 					e.printStackTrace();
+					System.out.println("出现手机端服务关闭等异常，错误码3");
 					stopServer("出现手机端服务关闭等异常，错误码3");
 				}
 			}
@@ -66,6 +73,7 @@ public class WifiSocket extends Thread {
 						SwingUtilities.invokeAndWait(new Runnable() {			
 							//@Override
 							public void run() {
+								messageArea.setForeground(Color.RED);
 								messageArea.setText(msgNow);
 							}							
 						});
