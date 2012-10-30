@@ -6,7 +6,7 @@
     <condition property="external-libs-ospath" value="${basedir}\${external-libs}" else="${basedir}/${external-libs}">
         <os family="windows" />
     </condition>
-	<property name="version.num" value="1.2"></property>
+	<property name="version.num" value="1.4"></property>
 	<property name="dest" value="build"/>
 	<property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.5"/>

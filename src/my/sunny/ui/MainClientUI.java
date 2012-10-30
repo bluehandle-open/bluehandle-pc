@@ -1,10 +1,11 @@
 package my.sunny.ui;
 
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Toolkit;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -13,7 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FontUIResource;
 
 public class MainClientUI {
 	private JFrame frame = new JFrame("接入方式选择");
@@ -65,6 +69,18 @@ public class MainClientUI {
 		pane.add(container);
 	}
 	
+	private static void InitGlobalFont(Font font) {
+		FontUIResource fontRes = new FontUIResource(font);
+		for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys
+				.hasMoreElements();) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource) {
+				UIManager.put(key, fontRes);
+			}
+		}
+	}
+	
 	public void start() {		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -82,6 +98,18 @@ public class MainClientUI {
 	}
 	
 	public static void main(String argc[]) {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		InitGlobalFont(new Font("宋体", Font.PLAIN, 14));
 		MainClientUI start = new MainClientUI();
 		start.start();
 	}
