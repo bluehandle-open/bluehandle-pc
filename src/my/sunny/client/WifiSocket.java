@@ -40,14 +40,17 @@ public class WifiSocket extends Thread {
 						sleep(10);
 					} else {
 						stopServer("手机端退出");
-					}					
+					}	
+					
+					socket.sendUrgentData(0xFF);
+					
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					stopServer("出现异常，错误码1");
 				} catch (IOException e) {
 					e.printStackTrace();
 					System.out.println("出现异常，错误码2");
-					stopServer("出现异常，错误码2");
+					stopServer("出现异常，手机端可能已经退出，错误码2");
 				} catch (Exception e) {//出现手机端服务关闭等异常
 					e.printStackTrace();
 					System.out.println("出现手机端服务关闭等异常，错误码3");
