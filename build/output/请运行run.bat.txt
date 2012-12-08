@@ -1,0 +1,2 @@
+您只需运行run.bat，即可启动程序
+如果有任何疑问，可以给我留言bluehandle@googlegroups.com
