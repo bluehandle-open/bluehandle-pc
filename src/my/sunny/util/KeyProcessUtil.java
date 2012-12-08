@@ -23,8 +23,15 @@ public class KeyProcessUtil {
 						if (keyCode < 0) {
 							keyCode &= 0xff;
 						}
-						System.out.println("press " + keyCode);
-						robot.keyPress(keyCode);						
+						if (keyCode != 0) {
+							System.out.println("press " + keyCode);
+							try {
+								robot.keyPress(keyCode);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						
 					}
 				}
 			
@@ -35,8 +42,15 @@ public class KeyProcessUtil {
 						if (keyCode < 0) {
 							keyCode &= 0xff;
 						}
-						robot.keyRelease(keyCode);
-						System.out.println("release " + keyCode);
+						if (keyCode != 0) {
+							try {
+								robot.keyRelease(keyCode);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							System.out.println("release " + keyCode);
+						}
+						
 					}
 				}
 			} else {
