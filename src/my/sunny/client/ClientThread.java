@@ -19,9 +19,11 @@ public class ClientThread extends Thread implements IBluetoothConst {
 	private volatile boolean hasInited = false;
 	private volatile static ClientThread instance = null;
 	private Robot robot;
+	/**线程结束标志位，线程内部如果检测到stop为true的话，就退出*/
+	private boolean stop;
 	
 	private ClientThread() {
-		
+		stop = false;
 	}
 	
 	public static ClientThread getInstance() {
@@ -54,17 +56,19 @@ public class ClientThread extends Thread implements IBluetoothConst {
 		} else {
 			System.out.println("resart the thread.");
 			this.interrupt();
+			stop = true;
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			stop = false;
 			start();
 		}
 	}	
 	
 	public void run() {
-		while(hasInited) {
+		while(hasInited && !stop) {
 			try {
 				sleep(10);
 				boolean isFinished = MessageUtil.processMessage(robot, is);
