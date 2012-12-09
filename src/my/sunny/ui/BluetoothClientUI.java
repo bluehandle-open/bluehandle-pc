@@ -39,6 +39,7 @@ public class BluetoothClientUI {
 	private Vector<DeviceDiscoveryRecord> devicesDiscovered;
 	
 	private JFrame parent;
+	private ClientThread lastClientInstance;
 	
 	public BluetoothClientUI() {
 		
@@ -146,11 +147,14 @@ public class BluetoothClientUI {
 				tableBlueTooths.removeRowSelectionInterval(selectIndex, selectIndex);
 				SwingUtilities.updateComponentTreeUI(tableBlueTooths);
 			} else if ("connect".equals(command)) {//连接
+				if (lastClientInstance != null) {
+					lastClientInstance.stopServer();
+				}
 				RemoteDevice device = devicesDiscovered.get(selectIndex).getDevice();
 				//System.out.println(device.getBluetoothAddress());
 				ClientConnection connection = new ClientConnection(device);//��ʼ�����캯��
 				StreamConnection socket = connection.connect();//l�ӷ���
-				ClientThread clientInstance = ClientThread.getInstance();
+				ClientThread clientInstance = new ClientThread();
 				
 				if (socket != null) {
 					try {
@@ -158,6 +162,7 @@ public class BluetoothClientUI {
 						if (clientInstance.isHasInit()) {//建立连接成功
 							//new KeySettingUI();
 							JOptionPane.showMessageDialog(jf,"建立连接成功");
+							lastClientInstance = clientInstance;
 						} else {
 							JOptionPane.showMessageDialog(jf,"建立连接失败");
 						}

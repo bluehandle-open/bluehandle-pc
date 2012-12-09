@@ -17,25 +17,25 @@ public class ClientThread extends Thread implements IBluetoothConst {
 	private OutputStream os;
 	private InputStream is;
 	private volatile boolean hasInited = false;
-	private volatile static ClientThread instance = null;
+//	private volatile static ClientThread instance = null;
 	private Robot robot;
 	/**线程结束标志位，线程内部如果检测到stop为true的话，就退出*/
 	private boolean stop;
 	
-	private ClientThread() {
+	public ClientThread() {
 		stop = false;
 	}
 	
-	public static ClientThread getInstance() {
-		if (instance == null) {
-			synchronized (ClientThread.class) {
-				if (instance == null) {
-					instance = new ClientThread();
-				}
-			}
-		}
-		return instance;
-	}
+//	public static ClientThread getInstance() {
+//		if (instance == null) {
+//			synchronized (ClientThread.class) {
+//				if (instance == null) {
+//					instance = new ClientThread();
+//				}
+//			}
+//		}
+//		return instance;
+//	}
 	
 	public boolean isHasInit() {
 		return hasInited;
@@ -116,7 +116,7 @@ public class ClientThread extends Thread implements IBluetoothConst {
 				os.close();
 				socket.close();
 				System.out.println("close the client thread.");
-				instance = null;
+//				instance = null;
 			} catch (IOException e) {			
 				e.printStackTrace();
 			}

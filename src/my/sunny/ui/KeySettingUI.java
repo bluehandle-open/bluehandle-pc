@@ -38,7 +38,7 @@ public class KeySettingUI implements ItemListener {
     private JRadioButton pptRadio = new JRadioButton("ppt");
     private JRadioButton playerRadio = new JRadioButton("千千静听");
     
-    private ClientThread clientInstance = ClientThread.getInstance();
+    private ClientThread clientInstance = new ClientThread();
 	
 	public KeySettingUI() {
 		init();
