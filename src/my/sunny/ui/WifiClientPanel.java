@@ -1,14 +1,15 @@
 package my.sunny.ui;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -28,36 +29,40 @@ public class WifiClientPanel extends AbstractTabPanel {
 
 	private WifiSocket socketNow;
 
-	public WifiClientPanel(int width, int height, JFrame parentFrame) {
+	public WifiClientPanel(int width, int height, BlueHandle parentFrame) {
 		super(width, height, parentFrame);		
 	}
 
 	@Override
 	protected void init() {
-		this.setLayout(null);
-		this.setBounds(1, 1, width-2, height-2);
-
+		//this.setLayout(null);
+		
+//		this.setBounds(1, 1, width-2, height-2);
+		
 		JPanel container = new JPanel();//
-		container.setLayout(null);
-		container.setBounds(1, 1, width-2, height-2);		
-
+		//container.setLayout(null);
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		container.setBounds(1, 1, width-2, height-2);	
+		
 		JPanel inputArea = new JPanel();
-		inputArea.setBounds(0, 0, 400, 50);
+//		inputArea.setBounds(0, 0, 400, 50);
 
 		JLabel inputInfo = new JLabel("请输入手机端的ip");
 		inputArea.add(inputInfo);
+		inputInfo.setEnabled(false);
 
 		
 		start = new JButton("开始");
+		start.setEnabled(false);
 		ip = new JTextField("", 15);
+		ip.setEnabled(false);
 		inputArea.add(ip);
-
 		inputArea.add(start);
 
 		container.add(inputArea);
 
 		JPanel messageArea = new JPanel();
-		messageArea.setBounds(0, 100, 390, 100);
+//		messageArea.setBounds(0, 100, 390, 100);
 		// messageArea.setLayout(null);
 		messageArea.setBorder((TitledBorder) BorderFactory
 				.createTitledBorder("提示信息"));
@@ -66,7 +71,7 @@ public class WifiClientPanel extends AbstractTabPanel {
 
 		container.add(messageArea);
 
-		add(container);
+		add(container,BorderLayout.PAGE_START);
 	}
 
 	@Override
@@ -76,6 +81,7 @@ public class WifiClientPanel extends AbstractTabPanel {
 			// @Override
 			public void actionPerformed(ActionEvent e) {
 				String ipStr = ip.getText();
+				System.out.println("ipNow:"+ipStr);
 				if (RegUtil.isMathing(RegUtil.simpleIpReg, ipStr)) {
 					message.setText("正在连接……");
 					if (socketNow != null) {
@@ -98,6 +104,7 @@ public class WifiClientPanel extends AbstractTabPanel {
 				} else {
 					message.setForeground(Color.RED);
 					message.setText("IP地址格式错误");
+					System.out.println("IP地址格式错误");
 				}
 			}
 

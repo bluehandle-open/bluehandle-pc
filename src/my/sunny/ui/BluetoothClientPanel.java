@@ -11,7 +11,6 @@ import java.util.Vector;
 import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.StreamConnection;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -35,7 +34,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 	private Vector<DeviceDiscoveryRecord> devicesDiscovered;
 	private ClientThread lastClientInstance;
 	
-	public BluetoothClientPanel(int width, int height, JFrame parentFrame) {
+	public BluetoothClientPanel(int width, int height, BlueHandle parentFrame) {
 		super(width, height, parentFrame);
 	}
 
