@@ -1,6 +1,7 @@
 package my.sunny.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -42,6 +43,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 	private static final String CMD_SELECT_BLUE_CONN = "selectBlueConnect";
 	private static final String CMD_SELECT_WIFI_CONN = "selectWifiConnect";
+	public static final int MSG_TYPE_NOMARL = 1;
+	public static final int MSG_TYPE_ERROR = 2;
+	public static final int MSG_TYPE_SUCCESS = 3;
 	private static final String CMD_SHOW_MANUAL = "showManual";
 	private static final String CMD_SHOW_ABOUT = "showAbout";
 	private static final String CMD_EXIT = "exit";
@@ -53,6 +57,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 	private AbstractTabPanel blueTab;
 	
 	private JTabbedPane tabs;
+	
+	/**消息显示区*/
+	private JLabel message = new JLabel("");
 
 	public BlueHandle() {
 
@@ -78,11 +85,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 		tabs.add("蓝牙连接", blueTab);
 		tabs.setEnabledAt(0, false);
-		//wifiTab.setEnabled(false);
 		tabs.setEnabledAt(1, false);
 		pane.add(tabs);
 		wifiTab.disableUI();
-		System.out.println("wifiTab:"+wifiTab.getPreferredSize()+":"+wifiTab.getLocation());
 		
 		JMenuBar MBar = new JMenuBar();
 		MBar.setOpaque(true);
@@ -96,8 +101,6 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 		JToolBar theBar = buildToolBar();// 工具栏区域
 		pane.add(theBar, BorderLayout.NORTH);
-		
-		
 	}
 
 	public JMenu buildConnectMenu() {
@@ -206,14 +209,40 @@ public class BlueHandle extends JFrame implements ActionListener {
 		JB.addActionListener(this);
 
 		toolBar.addSeparator();
-		// JLabel JLfont = new JLabel("Font Type");
-		// toolBar.add(JLfont);
-		// toolBar.addSeparator();
+		
+		message.setBorder(new EtchedBorder());
+		toolBar.add(message);
+		toolBar.addSeparator();
 
 		return toolBar;
 	}// end of buildToolBar()
 	
+	public void showMessage(int type, String msg) {
+		switch(type) {
+		case MSG_TYPE_NOMARL:
+			message.setForeground(Color.BLACK);
+			break;
+		case MSG_TYPE_ERROR:
+			message.setForeground(Color.RED);
+			break;
+		case MSG_TYPE_SUCCESS:
+			message.setForeground(Color.BLUE);
+			break;
+		}
+		message.setText(msg);
+	}
 	
+	public void showInfo(String msg) {
+		showMessage(MSG_TYPE_NOMARL,msg);
+	}
+	
+	public void showError(String msg) {
+		showMessage(MSG_TYPE_ERROR,msg);
+	}
+	
+	public void showSuccess(String msg) {
+		showMessage(MSG_TYPE_SUCCESS,msg);
+	}
 
 	public void actionPerformed(ActionEvent ae) {
 		String cmdNow = ae.getActionCommand();
@@ -226,6 +255,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 			tabs.setEnabledAt(0, true);
 			tabs.setEnabledAt(1, false);
 			tabs.setSelectedComponent(wifiTab);
+			wifiTab.enableUI();
 			selectedType = CONN_TYPE_WIFI;
 		} else if (CMD_SHOW_MANUAL.equals(cmdNow)) {
 
@@ -243,25 +273,27 @@ public class BlueHandle extends JFrame implements ActionListener {
 		StatusBar statusBar = new StatusBar(widths,this);
 		getContentPane().add(statusBar,BorderLayout.SOUTH);
 	}
+	
+	public void start() {
+		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		addStatusBar();
+		setVisible(true);
+		double   width   =   Toolkit.getDefaultToolkit().getScreenSize().getWidth(); 
+        double   height   =   Toolkit.getDefaultToolkit().getScreenSize().getHeight(); 
+        setLocation(   (int)   (width   -   getWidth())   /   2, 
+                (int)   (height   -   getHeight())   /   2); 
+        setResizable(false);
+	}
 
 	public static void main(String[] args) {
 
 		BlueHandle F = new BlueHandle();
-		F.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-		F.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});// end of addWindowListener
-		F.addStatusBar();
-		F.setVisible(true);
-		double   width   =   Toolkit.getDefaultToolkit().getScreenSize().getWidth(); 
-        double   height   =   Toolkit.getDefaultToolkit().getScreenSize().getHeight(); 
-        F.setLocation(   (int)   (width   -   F.getWidth())   /   2, 
-                                 (int)   (height   -   F.getHeight())   /   2); 
-        F.setResizable(false);
-        
-        F.setGlassPane(new GlassPane());
+		F.start();
 	} // end of main
 
 	class ToolBarAction extends AbstractAction {

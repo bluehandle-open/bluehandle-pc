@@ -23,9 +23,10 @@ public class WifiClientPanel extends AbstractTabPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -4618648772085518640L;
-	private JLabel message = new JLabel("");
-	private JButton start = new JButton("开始");
-	private JTextField ip = new JTextField("", 15);
+	private JLabel message;
+	private JButton start;
+	private JTextField ip;
+	private JLabel inputInfo;
 
 	private WifiSocket socketNow;
 
@@ -35,43 +36,36 @@ public class WifiClientPanel extends AbstractTabPanel {
 
 	@Override
 	protected void init() {
-		//this.setLayout(null);
-		
-//		this.setBounds(1, 1, width-2, height-2);
-		
+	
 		JPanel container = new JPanel();//
-		//container.setLayout(null);
 		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
-		container.setBounds(1, 1, width-2, height-2);	
 		
 		JPanel inputArea = new JPanel();
-//		inputArea.setBounds(0, 0, 400, 50);
-
-		JLabel inputInfo = new JLabel("请输入手机端的ip");
-		inputArea.add(inputInfo);
-		inputInfo.setEnabled(false);
-
 		
-		start = new JButton("开始");
-		start.setEnabled(false);
+		inputInfo = new JLabel("请输入手机端的ip");
+		inputArea.add(inputInfo);
 		ip = new JTextField("", 15);
-		ip.setEnabled(false);
 		inputArea.add(ip);
+		start = new JButton("开始");
 		inputArea.add(start);
 
 		container.add(inputArea);
 
-		JPanel messageArea = new JPanel();
-//		messageArea.setBounds(0, 100, 390, 100);
-		// messageArea.setLayout(null);
-		messageArea.setBorder((TitledBorder) BorderFactory
-				.createTitledBorder("提示信息"));
-		message = new JLabel("");
-		messageArea.add(message);
-
-		container.add(messageArea);
-
 		add(container,BorderLayout.PAGE_START);
+	}
+
+	@Override
+	protected void disableUI() {
+		inputInfo.setEnabled(false);
+		start.setEnabled(false);
+		ip.setEnabled(false);
+	}
+
+	@Override
+	protected void enableUI() {
+		inputInfo.setEnabled(true);
+		start.setEnabled(true);
+		ip.setEnabled(true);
 	}
 
 	@Override
@@ -83,27 +77,27 @@ public class WifiClientPanel extends AbstractTabPanel {
 				String ipStr = ip.getText();
 				System.out.println("ipNow:"+ipStr);
 				if (RegUtil.isMathing(RegUtil.simpleIpReg, ipStr)) {
-					message.setText("正在连接……");
+					parentFrame.showInfo("正在连接……");
 					if (socketNow != null) {
 						socketNow.stopServer();
 					}
 					try {
 						socketNow = new WifiSocket(ipStr, message);
 						socketNow.start();
-						message.setForeground(Color.BLACK);
-						message.setText("初始化成功");
+						
+						parentFrame.showSuccess("初始化成功");
 					} catch (IOException e1) {
 						e1.printStackTrace();
-						message.setForeground(Color.RED);
-						message.setText("初始化失败，错误码1");
+						
+						parentFrame.showError("初始化失败，错误码1");
 					} catch (AWTException e1) {
 						e1.printStackTrace();
-						message.setForeground(Color.RED);
-						message.setText("初始化失败，错误码2");
+						
+						parentFrame.showError("初始化失败，错误码2");
 					}
 				} else {
-					message.setForeground(Color.RED);
-					message.setText("IP地址格式错误");
+					
+					parentFrame.showError("IP地址格式错误");
 					System.out.println("IP地址格式错误");
 				}
 			}
