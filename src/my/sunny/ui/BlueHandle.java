@@ -4,13 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -24,9 +28,13 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FontUIResource;
 
 public class BlueHandle extends JFrame implements ActionListener {
 	/**
@@ -59,7 +67,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 	private JTabbedPane tabs;
 	
 	/**消息显示区*/
-	private JLabel message = new JLabel("");
+	private JTextField message = new JTextField("");
 
 	public BlueHandle() {
 
@@ -175,6 +183,8 @@ public class BlueHandle extends JFrame implements ActionListener {
 	public JToolBar buildToolBar() {
 
 		JToolBar toolBar = new JToolBar();
+		
+		System.out.println(toolBar.getLayout());
 		toolBar.setFloatable(true);
 
 		ToolBarAction btnWifiConn = new ToolBarAction("wifiConn",
@@ -211,6 +221,12 @@ public class BlueHandle extends JFrame implements ActionListener {
 		toolBar.addSeparator();
 		
 		message.setBorder(new EtchedBorder());
+		message.setEditable(false);
+		
+		message.setOpaque(false);
+		message.setPreferredSize(new Dimension(200,30));
+		Font font = new Font("宋体",Font.PLAIN,14);
+		message.setFont(font);
 		toolBar.add(message);
 		toolBar.addSeparator();
 
@@ -229,7 +245,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 			message.setForeground(Color.BLUE);
 			break;
 		}
-		message.setText(msg);
+		message.setText("  "+msg);
 	}
 	
 	public void showInfo(String msg) {
@@ -251,12 +267,16 @@ public class BlueHandle extends JFrame implements ActionListener {
 			tabs.setEnabledAt(0, false);
 			tabs.setSelectedComponent(blueTab);
 			selectedType = CONN_TYPE_BLUE;
+			
+			showInfo("");
 		} else if (CMD_SELECT_WIFI_CONN.equals(cmdNow)) {
 			tabs.setEnabledAt(0, true);
 			tabs.setEnabledAt(1, false);
 			tabs.setSelectedComponent(wifiTab);
 			wifiTab.enableUI();
 			selectedType = CONN_TYPE_WIFI;
+			
+			showInfo("");
 		} else if (CMD_SHOW_MANUAL.equals(cmdNow)) {
 
 		} else if (CMD_SHOW_ABOUT.equals(cmdNow)) {
@@ -270,7 +290,8 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	public void addStatusBar() {
 		int widths[] = {60,20};
-		StatusBar statusBar = new StatusBar(widths,this);
+		String texts[] = {"当前连接方式：尚未选择","当前连接状态：尚未连接"};
+		StatusBar statusBar = new StatusBar(widths,texts,this);
 		getContentPane().add(statusBar,BorderLayout.SOUTH);
 	}
 	
@@ -288,10 +309,24 @@ public class BlueHandle extends JFrame implements ActionListener {
         setLocation(   (int)   (width   -   getWidth())   /   2, 
                 (int)   (height   -   getHeight())   /   2); 
         setResizable(false);
+        
+        showError("请选择连接方式");
+	}
+	
+	private static void InitGlobalFont(Font font) {
+		FontUIResource fontRes = new FontUIResource(font);
+		for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys
+				.hasMoreElements();) {
+			Object key = keys.nextElement();
+			Object value = UIManager.get(key);
+			if (value instanceof FontUIResource) {
+				UIManager.put(key, fontRes);
+			}
+		}
 	}
 
 	public static void main(String[] args) {
-
+		InitGlobalFont(new Font("宋体", Font.PLAIN, 13));
 		BlueHandle F = new BlueHandle();
 		F.start();
 	} // end of main

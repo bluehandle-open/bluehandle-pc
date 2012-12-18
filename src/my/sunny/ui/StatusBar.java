@@ -67,7 +67,7 @@ public class StatusBar extends JPanel {
 	 *            要创建状态栏的窗口
 	 */
 	public StatusBar(int status_number, JFrame window) {
-		this(averageWidth(status_number), window);
+		this(averageWidth(status_number),null, window);
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class StatusBar extends JPanel {
 	 * @param window
 	 *            要创建状态栏的窗口
 	 */
-	public StatusBar(int[] widthes, JFrame window) {
-		this(widthes, new Rectangle(0, window.getHeight() - statusBarHeight
+	public StatusBar(int[] widthes, String[] texts, JFrame window) {
+		this(widthes, texts, new Rectangle(0, window.getHeight() - statusBarHeight
 				- titleBarHeight, window.getWidth(), statusBarHeight));
 	}
 
@@ -95,10 +95,10 @@ public class StatusBar extends JPanel {
 	 * @param rectangle
 	 *            状态栏的位置，相对父控件的位置
 	 */
-	public StatusBar(int[] widthes, Rectangle rectangle) {
+	public StatusBar(int[] widthes, String[] texts, Rectangle rectangle) {
 		super();
 		processWidthes(widthes);
-		init(rectangle);
+		init(rectangle,texts);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class StatusBar extends JPanel {
 	 * 
 	 * @param rectangle
 	 */
-	private void init(Rectangle rectangle) {
+	private void init(Rectangle rectangle,String[] texts) {
 		setBounds(rectangle);
 		System.out.println(rectangle.toString());
 		//setBorder(new LineBorder(Color.black, 1, false));
@@ -158,7 +158,11 @@ public class StatusBar extends JPanel {
 			if (currentWidth == 0)
 				break;
 
-			status[index] = new JLabel("就绪" + index);
+			String textNow = "就绪" + index;
+			if (texts != null) {
+				textNow = texts[index];
+			}
+			status[index] = new JLabel(textNow);
 //			status[index]
 //					.setBounds(currentX, 0, currentWidth, rectangle.height);
 			System.out.println("currentWidth:"+currentWidth);
