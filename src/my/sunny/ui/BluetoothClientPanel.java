@@ -119,6 +119,8 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 				if (lastClientInstance != null) {
 					lastClientInstance.stopServer();
 				}
+				parentFrame.showConnStatus("未连接");
+				
 				RemoteDevice device = devicesDiscovered.get(selectIndex).getDevice();
 				//System.out.println(device.getBluetoothAddress());
 				ClientConnection connection = new ClientConnection(device);//��ʼ�����캯��
@@ -130,15 +132,19 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 						clientInstance.initThread(socket);
 						if (clientInstance.isHasInit()) {//建立连接成功
 							//new KeySettingUI();
-							JOptionPane.showMessageDialog(parentFrame,"建立连接成功");
+							parentFrame.showSuccess("初始化成功");
+							parentFrame.showConnStatus("已连接");
+							parentFrame.setConnectedType(BlueHandle.CONN_TYPE_BLUE);
 							lastClientInstance = clientInstance;
 						} else {
-							JOptionPane.showMessageDialog(parentFrame,"建立连接失败");
+							parentFrame.showError("建立连接失败");
 						}
 					} catch (IOException e1) {//����������쳣	
 						e1.printStackTrace();
+						parentFrame.showError("初始化失败，错误码1");
 					} catch (AWTException e1) {//���ܻ�ȡ����robot		
 						e1.printStackTrace();
+						parentFrame.showError("初始化失败，错误码2");
 					}
 				} else {
 					JOptionPane.showMessageDialog(parentFrame,"设备初始化失败");					

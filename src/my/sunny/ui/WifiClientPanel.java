@@ -2,18 +2,15 @@ package my.sunny.ui;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 
 import my.sunny.client.WifiSocket;
 import my.sunny.util.RegUtil;
@@ -81,11 +78,15 @@ public class WifiClientPanel extends AbstractTabPanel {
 					if (socketNow != null) {
 						socketNow.stopServer();
 					}
+					
+					parentFrame.showConnStatus("未连接");
 					try {
 						socketNow = new WifiSocket(ipStr, message);
 						socketNow.start();
 						
 						parentFrame.showSuccess("初始化成功");
+						parentFrame.showConnStatus("已连接");
+						parentFrame.setConnectedType(BlueHandle.CONN_TYPE_WIFI);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 						

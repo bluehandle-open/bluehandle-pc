@@ -13,19 +13,16 @@ import java.awt.event.WindowEvent;
 import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -33,7 +30,6 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 
 public class BlueHandle extends JFrame implements ActionListener {
@@ -42,12 +38,12 @@ public class BlueHandle extends JFrame implements ActionListener {
 	 */
 	private static final long serialVersionUID = 6761264863876829858L;
 
-	private static final int CONN_TYPE_BLUE = 1;
-	private static final int CONN_TYPE_WIFI = 0;
+	public static final int CONN_TYPE_BLUE = 1;
+	public static final int CONN_TYPE_WIFI = 0;
 	JTextArea theArea = null;
 	private static final int DEFAULT_WIDTH = 620;
 	private static final int DEFAULT_HEIGHT = 520;
-	private int selectedType;
+	private int connectedType;
 
 	private static final String CMD_SELECT_BLUE_CONN = "selectBlueConnect";
 	private static final String CMD_SELECT_WIFI_CONN = "selectWifiConnect";
@@ -68,6 +64,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	/**消息显示区*/
 	private JTextField message = new JTextField("");
+	
+	/**状态栏*/
+	private StatusBar statusBar;
 
 	public BlueHandle() {
 
@@ -259,24 +258,57 @@ public class BlueHandle extends JFrame implements ActionListener {
 	public void showSuccess(String msg) {
 		showMessage(MSG_TYPE_SUCCESS,msg);
 	}
+	
+	private void showConnTypeStatus(String type) {
+		statusBar.setStatus(0, "当前连接方式："+type);
+	}
+	
+	public void showConnStatus(String status) {
+		statusBar.setStatus(1, "当前连接状态：" + status);
+	}	
+
+	public void setConnectedType(int connectedType) {
+		this.connectedType = connectedType;
+	}
 
 	public void actionPerformed(ActionEvent ae) {
 		String cmdNow = ae.getActionCommand();
 		if (CMD_SELECT_BLUE_CONN.equals(cmdNow)) {
+			if (connectedType == CONN_TYPE_WIFI) {
+				int ifadd=JOptionPane.showConfirmDialog(
+						this, "当前wifi方式已连接，选择蓝牙连接将会断开之前的连接，是否继续！",
+						"警告",JOptionPane.YES_NO_OPTION); 
+				if (ifadd == JOptionPane.NO_OPTION) {
+					return;
+				} else {
+					wifiTab.close();
+				}
+			}
+			//
 			tabs.setEnabledAt(1, true);
 			tabs.setEnabledAt(0, false);
 			tabs.setSelectedComponent(blueTab);
-			selectedType = CONN_TYPE_BLUE;
-			
+						
 			showInfo("");
+			showConnTypeStatus("蓝牙");
 		} else if (CMD_SELECT_WIFI_CONN.equals(cmdNow)) {
+			if (connectedType == CONN_TYPE_BLUE) {
+				int ifadd=JOptionPane.showConfirmDialog(
+						this, "当前蓝牙方式已连接，选择wifi连接将会断开之前的连接，是否继续！",
+						"警告",JOptionPane.YES_NO_OPTION); 
+				if (ifadd == JOptionPane.NO_OPTION) {
+					return;
+				} else {
+					blueTab.close();
+				}
+			}
 			tabs.setEnabledAt(0, true);
 			tabs.setEnabledAt(1, false);
 			tabs.setSelectedComponent(wifiTab);
 			wifiTab.enableUI();
-			selectedType = CONN_TYPE_WIFI;
-			
+						
 			showInfo("");
+			showConnTypeStatus("wifi");
 		} else if (CMD_SHOW_MANUAL.equals(cmdNow)) {
 
 		} else if (CMD_SHOW_ABOUT.equals(cmdNow)) {
@@ -291,7 +323,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 	public void addStatusBar() {
 		int widths[] = {60,20};
 		String texts[] = {"当前连接方式：尚未选择","当前连接状态：尚未连接"};
-		StatusBar statusBar = new StatusBar(widths,texts,this);
+		statusBar = new StatusBar(widths,texts,this);
 		getContentPane().add(statusBar,BorderLayout.SOUTH);
 	}
 	
