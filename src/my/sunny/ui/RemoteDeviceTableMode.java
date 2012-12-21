@@ -35,11 +35,11 @@ public class RemoteDeviceTableMode  implements TableModel {
 	//@Override
 	public String getColumnName(int columnIndex) {
 		if (columnIndex == 0) {
-			return "index";
+			return "序号";
 		} else if (columnIndex == 1) {
-			return "mac";
+			return "物理地址";
 		} else {
-			return "name";
+			return "名称";
 		}		
 	}
 
