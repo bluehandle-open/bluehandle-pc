@@ -40,10 +40,11 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 	public static final int CONN_TYPE_BLUE = 1;
 	public static final int CONN_TYPE_WIFI = 0;
+	public static final int CONN_NONE = -1;
 	JTextArea theArea = null;
 	private static final int DEFAULT_WIDTH = 620;
 	private static final int DEFAULT_HEIGHT = 520;
-	private int connectedType;
+	private int connectedType = CONN_NONE;
 
 	private static final String CMD_SELECT_BLUE_CONN = "selectBlueConnect";
 	private static final String CMD_SELECT_WIFI_CONN = "selectWifiConnect";
