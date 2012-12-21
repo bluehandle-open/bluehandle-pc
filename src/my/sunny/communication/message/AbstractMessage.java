@@ -26,7 +26,7 @@ public abstract class AbstractMessage {
 		return body;
 	}
 	
-	public byte[] getData() {
+	public byte[] getMessage() {
 		byte[] data = new byte[totalLen];
 		data[0] = totalLen;
 		data[1] = type;

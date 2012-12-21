@@ -9,7 +9,8 @@ import java.io.OutputStream;
 import javax.microedition.io.StreamConnection;
 
 import my.sunny.IBluetoothConst;
-import my.sunny.communication.message.AbstractSendMessage;
+import my.sunny.communication.message.AbstractMessage;
+import my.sunny.communication.message.HeartBeatRequestMessage;
 import my.sunny.communication.message.MessageUtil;
 
 public class ClientThread extends Thread implements IBluetoothConst {
@@ -74,6 +75,7 @@ public class ClientThread extends Thread implements IBluetoothConst {
 				boolean isFinished = MessageUtil.processMessage(robot, is);
 				if (!isFinished) {
 					System.out.println("process...");
+					send2Server(new HeartBeatRequestMessage());
 				} else {
 					if (socket != null) {
 						stopServer();
@@ -100,7 +102,7 @@ public class ClientThread extends Thread implements IBluetoothConst {
 		}
 	}
 	
-	public void send2Server(AbstractSendMessage message) throws IOException {
+	public void send2Server(AbstractMessage message) throws IOException {
 		if (hasInited) {
 			os.write(message.getMessage());
 			System.out.println("send a message.");

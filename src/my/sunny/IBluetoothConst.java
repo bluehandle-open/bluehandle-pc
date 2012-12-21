@@ -16,6 +16,8 @@ public interface IBluetoothConst {
 	public static final byte playerKeySet = 0x30;
 	//public static final byte playerKeyGet = 0x31;
 	public static final byte FINISH_SOCKET = 0x40;
+	public static final byte HEART_BEAT_REQ = 0x41;
+	public static final byte HEART_BEAT_RESP = 0x42;
 	
 	public static final byte toPress = 1;
 	public static final byte toRelease = 2;
