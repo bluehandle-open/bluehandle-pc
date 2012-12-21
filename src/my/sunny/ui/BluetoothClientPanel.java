@@ -1,8 +1,8 @@
 package my.sunny.ui;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -10,10 +10,12 @@ import java.util.Vector;
 
 import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.StreamConnection;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -29,6 +31,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 	private JTable tableBlueTooths;
 	private JButton buSearch;
 	private JLabel messageArea;
+	private JPanel container;//
 	private JScrollPane scrollPane = null;
 	
 	private Vector<DeviceDiscoveryRecord> devicesDiscovered;
@@ -40,14 +43,18 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 
 	@Override
 	protected void init() {
-		this.setLayout(new FlowLayout());
+		container  = new JPanel();
+		container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+		
+		JPanel searchArea = new JPanel();
 		messageArea = new JLabel("请选择一个设备进行连接");
 		messageArea.setMinimumSize(new Dimension(50,10));
-		add(messageArea);
+		searchArea.add(messageArea);
 		
 		buSearch = new JButton("搜索");
-		add(buSearch);
-		
+		searchArea.add(buSearch);
+		container.add(searchArea);
+		add(container,BorderLayout.PAGE_START);
 	}
 	
 	private void refreshTable() {
@@ -63,7 +70,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 		scrollPane = new JScrollPane(tableBlueTooths);	//������������������	
 		tableBlueTooths.setPreferredScrollableViewportSize(new Dimension(400,100));
 		scrollPane.setAutoscrolls(true);		
-		add(scrollPane);
+		container.add(scrollPane);
 	}
 	
 	private void searchDeviceList() {
@@ -71,7 +78,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 			refreshTable();
 			System.out.println("第一次刷新列表");
 		} else {//�����刷新�б�
-			remove(scrollPane);
+			container.remove(scrollPane);
 			SwingUtilities.updateComponentTreeUI(parentFrame);
 			refreshTable();	
 			System.out.println("重新刷新列表");
@@ -147,7 +154,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 						parentFrame.showError("初始化失败，错误码2");
 					}
 				} else {
-					JOptionPane.showMessageDialog(parentFrame,"设备初始化失败");					
+					parentFrame.showError("设备初始化失败");					
 				}
 				
 			}
