@@ -1,7 +1,6 @@
 package my.sunny.client;
 
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Robot;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,11 +8,11 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
-import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
 import my.sunny.IBluetoothConst;
 import my.sunny.communication.message.MessageUtil;
+import my.sunny.ui.BlueHandle;
 
 public class WifiSocket extends Thread {
 	private Socket socket = null;
@@ -21,13 +20,14 @@ public class WifiSocket extends Thread {
 	private InputStream is;
 	private boolean stop = false;
 	private Robot robot;
-	private JLabel messageArea;
-	public WifiSocket(String phoneIp,JLabel messageArea) throws IOException, AWTException {
+
+	private BlueHandle blueHandle;
+	public WifiSocket(String phoneIp,BlueHandle blueHandle) throws IOException, AWTException {
 		this.socket = new Socket(phoneIp,IBluetoothConst.PORT);
 		this.os = socket.getOutputStream();
 		this.is = socket.getInputStream();
 		this.robot = new Robot();
-		this.messageArea = messageArea;
+		this.blueHandle = blueHandle;
 	}
 	
 	public void run() {
@@ -76,8 +76,8 @@ public class WifiSocket extends Thread {
 						SwingUtilities.invokeAndWait(new Runnable() {			
 							//@Override
 							public void run() {
-								messageArea.setForeground(Color.RED);
-								messageArea.setText(msgNow);
+								blueHandle.showError(msgNow);
+								blueHandle.showNotConnectedStatus();
 							}							
 						});
 					} catch (InterruptedException e) {

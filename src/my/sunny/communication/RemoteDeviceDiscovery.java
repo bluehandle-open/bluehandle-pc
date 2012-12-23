@@ -18,18 +18,18 @@ public class RemoteDeviceDiscovery {
 		return devicesDiscovered;
 	}     
     
-    private static void setText(final JLabel messageArea,final String s) {
-
-    	messageArea.setText(s);
-	}
+//    private static void setText(final JLabel messageArea,final String s) {
+//
+//    	messageArea.setText(s);
+//	}
    
 	public static void searchDevices(JLabel messageArea) {
-
+		
         final Object inquiryCompletedEvent = new Object();//�����¼������
 
         devicesDiscovered.clear();//�����ʷ��¼
         
-        setText(messageArea,"开始搜索......");
+        
         DiscoveryListener listener = new DiscoveryListener() {//搜索监听器
 
             public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
@@ -58,10 +58,10 @@ public class RemoteDeviceDiscovery {
 				started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, listener);
 				if (started) {
 	                System.out.println("wait for device inquiry to complete...");
-	                
+	                messageArea.setText("开始搜索......");
 	                inquiryCompletedEvent.wait();//等待搜索完成
 	                System.out.println(devicesDiscovered.size() +  " device(s) found");
-	                setText(messageArea,"搜索结束");
+	                messageArea.setText("搜索结束");
 	            }
 			} catch (BluetoothStateException e) {
 				

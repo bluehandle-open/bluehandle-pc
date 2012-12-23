@@ -24,7 +24,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -41,7 +40,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 	public static final int CONN_TYPE_BLUE = 1;
 	public static final int CONN_TYPE_WIFI = 0;
 	public static final int CONN_NONE = -1;
-	JTextArea theArea = null;
+
 	private static final int DEFAULT_WIDTH = 620;
 	private static final int DEFAULT_HEIGHT = 520;
 	private int connectedType = CONN_NONE;
@@ -62,6 +61,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 	private AbstractTabPanel blueTab;
 	
 	private JTabbedPane tabs;
+	
+	public static final String CONNECTED_STATUS = "已连接";
+	public static final String NOT_CONNECTED_STATUS = "尚未连接";
 	
 	/**消息显示区*/
 	private JTextField message = new JTextField("");
@@ -266,7 +268,15 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	public void showConnStatus(String status) {
 		statusBar.setStatus(1, "当前连接状态：" + status);
-	}	
+	}
+	
+	public void showConnectedStatus() {
+		showConnStatus(CONNECTED_STATUS);
+	}
+	
+	public void showNotConnectedStatus() {
+		showConnStatus(NOT_CONNECTED_STATUS);
+	}
 
 	public void setConnectedType(int connectedType) {
 		this.connectedType = connectedType;

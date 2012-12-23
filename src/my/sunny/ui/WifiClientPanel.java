@@ -20,7 +20,7 @@ public class WifiClientPanel extends AbstractTabPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -4618648772085518640L;
-	private JLabel message;
+//	private JLabel message;
 	private JButton start;
 	private JTextField ip;
 	private JLabel inputInfo;
@@ -79,13 +79,13 @@ public class WifiClientPanel extends AbstractTabPanel {
 						socketNow.stopServer();
 					}
 					
-					parentFrame.showConnStatus("未连接");
+					parentFrame.showNotConnectedStatus();
 					try {
-						socketNow = new WifiSocket(ipStr, message);
+						socketNow = new WifiSocket(ipStr, parentFrame);
 						socketNow.start();
 						
 						parentFrame.showSuccess("初始化成功");
-						parentFrame.showConnStatus("已连接");
+						parentFrame.showConnectedStatus();
 						parentFrame.setConnectedType(BlueHandle.CONN_TYPE_WIFI);
 					} catch (IOException e1) {
 						e1.printStackTrace();

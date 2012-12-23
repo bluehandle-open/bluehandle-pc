@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 import java.util.Vector;
 
 import javax.bluetooth.RemoteDevice;
@@ -20,6 +21,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import my.sunny.client.ClientConnection;
 import my.sunny.client.ClientThread;
@@ -58,6 +60,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 	}
 	
 	private void refreshTable() {
+		//parentFrame.showInfo("正在搜索……");
 		tableBlueTooths = new JTable();//�������
 		RemoteDeviceDiscovery.searchDevices(messageArea);
 		devicesDiscovered = RemoteDeviceDiscovery.getDevicesDiscovered();
@@ -71,6 +74,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 		tableBlueTooths.setPreferredScrollableViewportSize(new Dimension(400,100));
 		scrollPane.setAutoscrolls(true);		
 		container.add(scrollPane);
+		//parentFrame.showInfo("");
 	}
 	
 	private void searchDeviceList() {
@@ -126,7 +130,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 				if (lastClientInstance != null) {
 					lastClientInstance.stopServer();
 				}
-				parentFrame.showConnStatus("未连接");
+				parentFrame.showNotConnectedStatus();
 				
 				RemoteDevice device = devicesDiscovered.get(selectIndex).getDevice();
 				//System.out.println(device.getBluetoothAddress());
@@ -136,11 +140,11 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 				
 				if (socket != null) {
 					try {
-						clientInstance.initThread(socket);
+						clientInstance.initThread(socket,parentFrame);
 						if (clientInstance.isHasInit()) {//建立连接成功
 							//new KeySettingUI();
 							parentFrame.showSuccess("初始化成功");
-							parentFrame.showConnStatus("已连接");
+							parentFrame.showConnectedStatus();
 							parentFrame.setConnectedType(BlueHandle.CONN_TYPE_BLUE);
 							lastClientInstance = clientInstance;
 						} else {
@@ -166,8 +170,9 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 		buSearch.addActionListener(new ActionListener() {
 
 			//@Override
-			public void actionPerformed(ActionEvent e) {				
-				searchDeviceList();	
+			public synchronized void actionPerformed(ActionEvent e) {				
+				//searchDeviceList();
+				new TableSearchWorker().execute();
 			}
 			
 		});
@@ -177,6 +182,25 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 	protected void close() {
 		if (lastClientInstance != null) {
 			lastClientInstance.stopServer();
+		}
+		
+	}
+	
+	class TableSearchWorker  extends SwingWorker<Void, String> {
+		
+		public TableSearchWorker() {
+			
+		}
+
+		@Override
+		protected Void doInBackground() throws Exception {
+			searchDeviceList();
+			return null;
+		}
+
+		@Override
+		protected void process(List<String> chunks) {
+			
 		}
 		
 	}

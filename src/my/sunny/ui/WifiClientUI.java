@@ -65,7 +65,7 @@ public class WifiClientUI {
 				if (RegUtil.isMathing(RegUtil.simpleIpReg, ipStr)) {
 					message.setText("正在连接……");
 					try {
-						new WifiSocket(ipStr,message).start();
+						new WifiSocket(ipStr,null).start();//这个地方不能用，因为传递过去的是空指针
 						message.setForeground(Color.BLACK);
 						message.setText("初始化成功");
 					} catch (IOException e1) {

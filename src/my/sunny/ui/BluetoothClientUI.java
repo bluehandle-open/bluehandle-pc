@@ -158,7 +158,7 @@ public class BluetoothClientUI {
 				
 				if (socket != null) {
 					try {
-						clientInstance.initThread(socket);
+						clientInstance.initThread(socket,null);//注意这个地方不能用，因为传过去的是空指针
 						if (clientInstance.isHasInit()) {//建立连接成功
 							//new KeySettingUI();
 							JOptionPane.showMessageDialog(jf,"建立连接成功");
