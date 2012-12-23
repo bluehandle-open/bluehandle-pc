@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.StreamConnection;
@@ -57,37 +58,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 		searchArea.add(buSearch);
 		container.add(searchArea);
 		add(container,BorderLayout.PAGE_START);
-	}
-	
-	private void refreshTable() {
-		//parentFrame.showInfo("正在搜索……");
-		tableBlueTooths = new JTable();//�������
-		RemoteDeviceDiscovery.searchDevices(messageArea);
-		devicesDiscovered = RemoteDeviceDiscovery.getDevicesDiscovered();
-		RemoteDeviceTableMode tableModel = new RemoteDeviceTableMode(devicesDiscovered);
-		tableBlueTooths.setModel(tableModel);
-		
-		JPopupMenu pop = getTablePop();
-		tableBlueTooths.setComponentPopupMenu(pop);
-
-		scrollPane = new JScrollPane(tableBlueTooths);	//������������������	
-		tableBlueTooths.setPreferredScrollableViewportSize(new Dimension(400,100));
-		scrollPane.setAutoscrolls(true);		
-		container.add(scrollPane);
-		//parentFrame.showInfo("");
-	}
-	
-	private void searchDeviceList() {
-		if (scrollPane == null) {//第一次搜索��didiyici sousu diyic 
-			refreshTable();
-			System.out.println("第一次刷新列表");
-		} else {//�����刷新�б�
-			container.remove(scrollPane);
-			SwingUtilities.updateComponentTreeUI(parentFrame);
-			refreshTable();	
-			System.out.println("重新刷新列表");
-		}		
-	}
+	}	
 	
 	private JPopupMenu getTablePop() {
 		JPopupMenu pop = new JPopupMenu();
@@ -131,6 +102,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 					lastClientInstance.stopServer();
 				}
 				parentFrame.showNotConnectedStatus();
+				parentFrame.showInfo("");
 				
 				RemoteDevice device = devicesDiscovered.get(selectIndex).getDevice();
 				//System.out.println(device.getBluetoothAddress());
@@ -172,6 +144,7 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 			//@Override
 			public synchronized void actionPerformed(ActionEvent e) {				
 				//searchDeviceList();
+				buSearch.setEnabled(false);
 				new TableSearchWorker().execute();
 			}
 			
@@ -186,21 +159,64 @@ public class BluetoothClientPanel extends AbstractTabPanel {
 		
 	}
 	
-	class TableSearchWorker  extends SwingWorker<Void, String> {
+	class TableSearchWorker  extends SwingWorker<RemoteDeviceTableMode, String> {
 		
 		public TableSearchWorker() {
 			
 		}
 
 		@Override
-		protected Void doInBackground() throws Exception {
-			searchDeviceList();
-			return null;
+		protected RemoteDeviceTableMode doInBackground() throws Exception {
+			publish("正在搜索……");
+			RemoteDeviceDiscovery.searchDevices();
+			devicesDiscovered = RemoteDeviceDiscovery.getDevicesDiscovered();
+			RemoteDeviceTableMode tableModel = new RemoteDeviceTableMode(devicesDiscovered);
+			return tableModel;
 		}
 
 		@Override
 		protected void process(List<String> chunks) {
+			String msg = chunks.get(chunks.size()-1);
+			parentFrame.showInfo(msg);
+		}
+		
+		private void refreshTable() {
+			try {
+				tableBlueTooths = new JTable();
+				RemoteDeviceTableMode tableModel = get();
+				
+				tableBlueTooths.setModel(tableModel);
+				
+				JPopupMenu pop = getTablePop();
+				tableBlueTooths.setComponentPopupMenu(pop);
+
+				scrollPane = new JScrollPane(tableBlueTooths);	//
+				tableBlueTooths.setPreferredScrollableViewportSize(new Dimension(400,100));
+				scrollPane.setAutoscrolls(true);
+				scrollPane.setVisible(true);
+				container.add(scrollPane);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
 			
+		}
+
+		@Override
+		protected void done() {
+			if (scrollPane == null) {//第一次搜索
+				refreshTable();
+				SwingUtilities.updateComponentTreeUI(parentFrame);
+				System.out.println("第一次刷新列表");
+			} else {//刷新
+				container.remove(scrollPane);
+				SwingUtilities.updateComponentTreeUI(parentFrame);
+				refreshTable();	
+				System.out.println("重新刷新列表");
+			}
+			parentFrame.showInfo("");
+			buSearch.setEnabled(true);
 		}
 		
 	}

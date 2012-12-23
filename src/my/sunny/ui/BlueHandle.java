@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
@@ -30,6 +32,11 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
+
+import my.sunny.util.CMDUtil;
+
+import com.whyun.util.FileFindUtil;
+import com.whyun.util.JarUtil;
 
 public class BlueHandle extends JFrame implements ActionListener {
 	/**
@@ -64,6 +71,8 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	public static final String CONNECTED_STATUS = "已连接";
 	public static final String NOT_CONNECTED_STATUS = "尚未连接";
+	
+	private static final String MANAUL_FILE_NAME = "蓝色手柄使用手册.doc";
 	
 	/**消息显示区*/
 	private JTextField message = new JTextField("");
@@ -181,6 +190,19 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 		return helpMenu;
 	}// end of buildStyleMenu()
+	
+	private ImageIcon getImageIcon(String relativePath) {
+		ImageIcon icon = null;
+		try {
+			URL path= JarUtil.getResource(relativePath);
+			if (path != null) {
+				icon = new ImageIcon(path);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return icon;		
+	}
 
 	public JToolBar buildToolBar() {
 
@@ -190,9 +212,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 		toolBar.setFloatable(true);
 
 		ToolBarAction btnWifiConn = new ToolBarAction("wifiConn",
-				new ImageIcon("resources/icons/wifi_on.png"));
+				getImageIcon("/resources/icons/wifi_on.png"));
 		ToolBarAction btnBlueConn = new ToolBarAction("blueConn",
-				new ImageIcon("resources/icons/bluetooth_on.png"));
+				getImageIcon("/resources/icons/bluetooth_on.png"));
 		
 		selectWifiConn = toolBar.add(btnWifiConn);
 		selectWifiConn.setActionCommand(CMD_SELECT_WIFI_CONN);
@@ -203,12 +225,12 @@ public class BlueHandle extends JFrame implements ActionListener {
 
 		toolBar.addSeparator();
 
-		ToolBarAction btnManual = new ToolBarAction("manual", new ImageIcon(
-				"resources/icons/help.png"));
-		ToolBarAction btnAbout = new ToolBarAction("about", new ImageIcon(
-				"resources/icons/about.png"));
-		ToolBarAction btnExit = new ToolBarAction("exit", new ImageIcon(
-				"resources/icons/exit.png"));
+		ToolBarAction btnManual = new ToolBarAction("manual",
+				getImageIcon("/resources/icons/help.png"));
+		ToolBarAction btnAbout = new ToolBarAction("about",
+				getImageIcon("/resources/icons/about.png"));
+		ToolBarAction btnExit = new ToolBarAction("exit",
+				getImageIcon("/resources/icons/exit.png"));
 		JButton JB;
 		JB = toolBar.add(btnManual);
 		JB.setActionCommand(CMD_SHOW_MANUAL);
@@ -256,6 +278,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	public void showError(String msg) {
 		showMessage(MSG_TYPE_ERROR,msg);
+		this.connectedType = CONN_NONE;
 	}
 	
 	public void showSuccess(String msg) {
@@ -321,7 +344,14 @@ public class BlueHandle extends JFrame implements ActionListener {
 			showInfo("");
 			showConnTypeStatus("wifi");
 		} else if (CMD_SHOW_MANUAL.equals(cmdNow)) {
-
+			String filePath = FileFindUtil.find(MANAUL_FILE_NAME);
+			if(filePath != null) {
+				try {
+					CMDUtil.executeFile(filePath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		} else if (CMD_SHOW_ABOUT.equals(cmdNow)) {
 
 		} else if (CMD_EXIT.equals(cmdNow)) {

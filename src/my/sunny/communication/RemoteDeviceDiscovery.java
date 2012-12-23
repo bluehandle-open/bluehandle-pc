@@ -3,12 +3,18 @@ package my.sunny.communication;
 //import java.io.IOException;
 //import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
-import javax.bluetooth.*;
-//import javax.swing.JLabel;
-import javax.swing.JLabel;
-//import javax.swing.SwingUtilities;
+
+import javax.bluetooth.BluetoothStateException;
+import javax.bluetooth.DeviceClass;
+import javax.bluetooth.DiscoveryAgent;
+import javax.bluetooth.DiscoveryListener;
+import javax.bluetooth.LocalDevice;
+import javax.bluetooth.RemoteDevice;
+import javax.bluetooth.ServiceRecord;
 
 import my.sunny.communication.bean.DeviceDiscoveryRecord;
+//import javax.swing.JLabel;
+//import javax.swing.SwingUtilities;
 
 public class RemoteDeviceDiscovery {
 
@@ -23,7 +29,7 @@ public class RemoteDeviceDiscovery {
 //    	messageArea.setText(s);
 //	}
    
-	public static void searchDevices(JLabel messageArea) {
+	public static void searchDevices() {
 		
         final Object inquiryCompletedEvent = new Object();//�����¼������
 
@@ -58,10 +64,10 @@ public class RemoteDeviceDiscovery {
 				started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, listener);
 				if (started) {
 	                System.out.println("wait for device inquiry to complete...");
-	                messageArea.setText("开始搜索......");
+//	                messageArea.setText("开始搜索......");
 	                inquiryCompletedEvent.wait();//等待搜索完成
 	                System.out.println(devicesDiscovered.size() +  " device(s) found");
-	                messageArea.setText("搜索结束");
+//	                messageArea.setText("搜索结束");
 	            }
 			} catch (BluetoothStateException e) {
 				

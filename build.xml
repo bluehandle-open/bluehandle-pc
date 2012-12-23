@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <project name="blueboothHandle" default="jar" basedir=".">
 	
-	<property name="main-class" value="my.sunny.ui.MainClientUI" />
+	<property name="main-class" value="my.sunny.ui.BlueHandle" />
 	<property name="external-libs" value="lib" />
+	<property name="resource" value="resources" />
+	<property name="resource-dest" value="bin/resources" />
     <condition property="external-libs-ospath" value="${basedir}\${external-libs}" else="${basedir}/${external-libs}">
         <os family="windows" />
     </condition>
@@ -18,6 +20,7 @@
     <target name="init">
         <mkdir dir="bin"> </mkdir>
         <mkdir dir="${dest}"></mkdir>
+        <mkdir dir="${resource-dest}"></mkdir>
     </target>
 
     <target name="compile" depends="init">
@@ -26,7 +29,10 @@
             <classpath>
                 <fileset dir="${external-libs}" includes="*.jar" />
             </classpath>
-        </javac>        
+        </javac>
+        <copy todir="${resource-dest}">
+            <fileset dir="${resource}" />
+        </copy>        
     </target>
 	
     <target name="clean">

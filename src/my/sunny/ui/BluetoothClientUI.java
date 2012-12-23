@@ -83,7 +83,7 @@ public class BluetoothClientUI {
 	
 	private void refreshTable() {
 		tableBlueTooths = new JTable();//�������
-		RemoteDeviceDiscovery.searchDevices(messageArea);
+		RemoteDeviceDiscovery.searchDevices();//删除了原函数中的jlabel
 		devicesDiscovered = RemoteDeviceDiscovery.getDevicesDiscovered();
 		RemoteDeviceTableMode tableModel = new RemoteDeviceTableMode(devicesDiscovered);
 		tableBlueTooths.setModel(tableModel);
