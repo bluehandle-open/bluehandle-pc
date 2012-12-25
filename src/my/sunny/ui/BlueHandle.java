@@ -1,5 +1,7 @@
 package my.sunny.ui;
 
+import static com.whyun.util.ResourceUtil.getImageIcon;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -11,7 +13,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
@@ -36,7 +37,6 @@ import javax.swing.plaf.FontUIResource;
 import my.sunny.util.CMDUtil;
 
 import com.whyun.util.FileFindUtil;
-import com.whyun.util.JarUtil;
 
 public class BlueHandle extends JFrame implements ActionListener {
 	/**
@@ -79,6 +79,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 	
 	/**状态栏*/
 	private StatusBar statusBar;
+	
+	/**关于窗口*/
+	private AboutFrame aboutFrame;
 
 	public BlueHandle() {
 
@@ -191,18 +194,7 @@ public class BlueHandle extends JFrame implements ActionListener {
 		return helpMenu;
 	}// end of buildStyleMenu()
 	
-	private ImageIcon getImageIcon(String relativePath) {
-		ImageIcon icon = null;
-		try {
-			URL path= JarUtil.getResource(relativePath);
-			if (path != null) {
-				icon = new ImageIcon(path);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return icon;		
-	}
+	
 
 	public JToolBar buildToolBar() {
 
@@ -212,9 +204,9 @@ public class BlueHandle extends JFrame implements ActionListener {
 		toolBar.setFloatable(true);
 
 		ToolBarAction btnWifiConn = new ToolBarAction("wifiConn",
-				getImageIcon("/resources/icons/wifi_on.png"));
+				getImageIcon("/icons/wifi_on.png"));
 		ToolBarAction btnBlueConn = new ToolBarAction("blueConn",
-				getImageIcon("/resources/icons/bluetooth_on.png"));
+				getImageIcon("/icons/bluetooth_on.png"));
 		
 		selectWifiConn = toolBar.add(btnWifiConn);
 		selectWifiConn.setActionCommand(CMD_SELECT_WIFI_CONN);
@@ -226,11 +218,11 @@ public class BlueHandle extends JFrame implements ActionListener {
 		toolBar.addSeparator();
 
 		ToolBarAction btnManual = new ToolBarAction("manual",
-				getImageIcon("/resources/icons/help.png"));
+				getImageIcon("/icons/help.png"));
 		ToolBarAction btnAbout = new ToolBarAction("about",
-				getImageIcon("/resources/icons/about.png"));
+				getImageIcon("/icons/about.png"));
 		ToolBarAction btnExit = new ToolBarAction("exit",
-				getImageIcon("/resources/icons/exit.png"));
+				getImageIcon("/icons/exit.png"));
 		JButton JB;
 		JB = toolBar.add(btnManual);
 		JB.setActionCommand(CMD_SHOW_MANUAL);
@@ -353,9 +345,28 @@ public class BlueHandle extends JFrame implements ActionListener {
 				}
 			}
 		} else if (CMD_SHOW_ABOUT.equals(cmdNow)) {
-
+			if (aboutFrame == null) {
+				aboutFrame = new AboutFrame();
+				aboutFrame.start();
+			} else {
+				aboutFrame.reShow();
+			}
+			
 		} else if (CMD_EXIT.equals(cmdNow)) {
-
+			String msg = "是否退出？";
+			if (connectedType != CONN_NONE) {
+				msg = "尚有连接建立，"+msg;
+			}
+			int ifadd=JOptionPane.showConfirmDialog(
+					this, msg,
+					"警告",JOptionPane.YES_NO_OPTION); 
+			if (ifadd == JOptionPane.NO_OPTION) {
+				return;
+			} else {
+				blueTab.close();
+				wifiTab.close();
+				System.exit(0);
+			}
 		} else {
 
 		}

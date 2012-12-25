@@ -165,7 +165,7 @@ public class StatusBar extends JPanel {
 			status[index] = new JLabel(textNow);
 //			status[index]
 //					.setBounds(currentX, 0, currentWidth, rectangle.height);
-			System.out.println("currentWidth:"+currentWidth);
+//			System.out.println("currentWidth:"+currentWidth);
 			status[index].setPreferredSize(new Dimension(currentWidth, rectangle.height));
 //			status[index].setLocation(currentX, 0);
 			status[index].setHorizontalAlignment(SwingConstants.LEFT);
