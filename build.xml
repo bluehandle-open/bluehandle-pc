@@ -8,7 +8,7 @@
     <condition property="external-libs-ospath" value="${basedir}\${external-libs}" else="${basedir}/${external-libs}">
         <os family="windows" />
     </condition>
-	<property name="version.num" value="1.5"></property>
+	<property name="version.num" value="1.6"></property>
 	<property name="dest" value="build/app"/>
 	<property name="jarfile" value="${dest}/bluetoothHandle.jar"></property>
 	<property name="debuglevel" value="source,lines,vars"/>
