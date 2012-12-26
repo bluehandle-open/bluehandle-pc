@@ -9,13 +9,16 @@ import my.sunny.IBluetoothConst;
 
 public class ServicesSearch implements IBluetoothConst {
 	private final Vector<String> serviceFound = new Vector<String>();//服务列表
+//	private 
 	private RemoteDevice device;//要查找服务的设备
 
 	public ServicesSearch(RemoteDevice device) {
 		this.device = device;
 	}
 
-	public Vector<String> getServiceFound() {
+	public Vector<String> getServiceFound() throws InterruptedException {
+
+		System.out.println("search return");
 		return serviceFound;
 	}
 

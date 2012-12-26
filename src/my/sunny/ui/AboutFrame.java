@@ -6,9 +6,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -24,7 +21,6 @@ import javax.swing.border.TitledBorder;
 import my.sunny.ui.component.ImagePanel;
 
 import com.whyun.util.JarUtil;
-import com.whyun.util.Streams;
 
 public class AboutFrame {
 
@@ -72,18 +68,10 @@ public class AboutFrame {
 		JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED); 
 		change.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
 		change.setOpaque(false);
-		change.setEditable(false);
-		URL changelogURL;
-		try {
-			changelogURL = JarUtil.getResource("/changelog.txt");
-			if (changelogURL != null) {
-				File cFile = new File(changelogURL.getFile());
-				byte[] content = Streams.file2bytes(cFile);
-				change.setText(new String(content));
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
+		change.setEditable(false);			
+				
+		String content = JarUtil.getJarResourceContent("/changelog.txt");
+		change.setText(new String(content));			
 		
 		scroll.setPreferredSize(new Dimension(360,120));
 		
