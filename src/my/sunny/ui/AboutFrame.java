@@ -88,8 +88,6 @@ public class AboutFrame {
 		pane.add(buttonArea,BorderLayout.LINE_END);
 	}
 	public void start() {
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
 		// Set up the content pane.
 		addComponentsToPane(frame.getContentPane());
 		// Display the window.
@@ -99,6 +97,8 @@ public class AboutFrame {
         double   height   =   Toolkit.getDefaultToolkit().getScreenSize().getHeight(); 
         frame.setLocation(   (int)   (width   -   frame.getWidth())   /   2, 
                                  (int)   (height   -   frame.getHeight())   /   2); 
+
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
 		addEvent();
@@ -113,6 +113,7 @@ public class AboutFrame {
 			}
 			
 		});
+		
 	}
 	
 	public boolean reShow() {
