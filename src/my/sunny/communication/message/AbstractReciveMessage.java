@@ -3,8 +3,8 @@ package my.sunny.communication.message;
 public abstract class AbstractReciveMessage extends AbstractMessage {
 	public AbstractReciveMessage(byte[] totalMessage) {
 		if (totalMessage != null && totalMessage.length > 1) {
-			this.totalLen = totalMessage[0];
-			this.type = totalMessage[1];
+			this.totalLen = totalMessage[1];
+			this.type = totalMessage[0];
 			body = new byte[totalLen-2];
 			if (totalMessage.length > 2) {
 				try {

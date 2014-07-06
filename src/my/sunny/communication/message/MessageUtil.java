@@ -17,12 +17,14 @@ public class MessageUtil implements IBluetoothConst {
 	public static AbstractMessage parse(byte[] totalMessge) {
 		AbstractMessage message = null;
 		if (totalMessge != null && totalMessge.length > 1) {
-			byte type = totalMessge[1];
+			byte type = totalMessge[0];
 			//byte totalLen = totalMessge[0];
 			if (type == recieveKey) {//��������¼�
 				message = new ReciveKey(totalMessge);
 			} else if (type == FINISH_SOCKET) {
 				message = new FinishMessage();
+			} else {
+				System.out.println("unsupport message type:"+type);
 			}
 		}
 		return message;
@@ -62,23 +64,37 @@ public class MessageUtil implements IBluetoothConst {
 //		BufferedReader BufferedReader = new BufferedReader(new InputStreamReader(is));
 		//String messageStr = brd.readLine();
 		DataInputStream in = new DataInputStream(is);
-		byte[] data = new byte[7];
-		in.read(data);
-//		char[] test = messageStr.toCharArray();
-//		for(int i=0;i<data.length;i++) {
-//			System.out.println(((int)(data[i])) + " ");
-//		}
+
+
+		byte type = in.readByte();
+		AbstractMessage message = null;
+		switch(type) {
+		case recieveKey:
+			
+			byte totalLen = in.readByte();
+			if (totalLen > 0) {
+				byte[] totalMessge = new byte[totalLen];
+				totalMessge[0] = type;
+				totalMessge[1] = totalLen;
+				in.read(totalMessge, 2, totalLen-2);
+				message = new ReciveKey(totalMessge);
+				System.out.println("get a key event.");
+				KeyProcessUtil.fireKeyEvent(robot,(ReciveKey)message);
+			}
+			break;
+		case FINISH_SOCKET:
+			in.readByte();//消耗掉头部的长度字节
+			isFinished = true;
+			message = new FinishMessage();
+			break;
+		default:
+			System.out.println("unknown message type:" + type);
+			break;
+		}
+
 		//brd.re
 		System.out.println();
-		AbstractMessage message = MessageUtil.parse(data);
-		if (message instanceof ReciveKey) {
-			KeyProcessUtil.fireKeyEvent(robot,(ReciveKey)message);
-			System.out.println("get a key event.");
-		} else if (message instanceof FinishMessage) {
-			isFinished = true;
-		} else {
-			System.out.println("unknown message.");
-		}
+		
 		return isFinished;
 	}
 }
