@@ -87,6 +87,9 @@ public class MessageUtil implements IBluetoothConst {
 			isFinished = true;
 			message = new FinishMessage();
 			break;
+		case HEART_BEAT_REQ:
+			in.readByte();
+			break;
 		default:
 			System.out.println("unknown message type:" + type);
 			break;
