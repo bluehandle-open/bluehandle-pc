@@ -39,13 +39,13 @@ public class ClientConnection implements IBluetoothConst {
 		ServicesSearch search = new ServicesSearch(device);
 		try {
 			
-			search.search();//²éÕÒ·şÎñ
+			search.search();//æŸ¥æ‰¾æœåŠ¡
 			Vector<String> serviceFound = search.getServiceFound();
 			int len = serviceFound.size();
-			if (len > 0) {//·şÎñ´æÔÚ
+			if (len > 0) {//æœåŠ¡å­˜åœ¨
 				
 				String url = serviceFound.get(len-1);
-				con = (StreamConnection) Connector.open(url);//Á¬½Ó·şÎñÆ÷
+				con = (StreamConnection) Connector.open(url);//è¿æ¥æœåŠ¡å™¨
 				if (con == null) {
 					System.out.println("open " + url + "failed.");
 				} else {
