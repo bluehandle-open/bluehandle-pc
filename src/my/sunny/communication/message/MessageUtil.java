@@ -96,7 +96,7 @@ public class MessageUtil implements IBluetoothConst {
 		}
 
 		//brd.re
-		System.out.println();
+//		System.out.println();
 		
 		return isFinished;
 	}

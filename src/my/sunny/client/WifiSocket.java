@@ -36,7 +36,7 @@ public class WifiSocket extends Thread {
 				try {
 					boolean isFinished = MessageUtil.processMessage(robot, is);
 					if (!isFinished) {
-						System.out.println("process...");
+//						System.out.println("process...");
 						sleep(10);
 					} else {
 						stopServer("手机端退出");
